@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Document</title>
+    <style>
+        .nodisplay {
+            display: none;
+        }
+
+        body {
+            padding: 10em;
+            font: 300 1em 'Helvetica Neue';
+        }
+
+        input {
+            font: 300 1em 'Helvetica Neue';
+        }
+    </style>
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <script>
+
+
+        $(function (){
+
+            $.post('/test', { name: 'shilpa' }, function (data) {
+                console.log(data);
+            });
+
+            $(document.forms[0]).submit(function (event) {
+                event.preventDefault();
+                var obj = {
+                    username: event.target.username.value,
+                    password: event.target.password.value
+                };
+                console.log(obj);
+                $.post('/login', obj, function(data) {
+                    console.log(data);
+                    if (data.message === 'USER_AUTHORIZED') {
+                        $(document.forms[0]).fadeOut(500, function () {
+                            $('#data').fadeIn();
+                        });
+                    }
+                });
+            });
+
+            $('#country_name').keydown(function (event) {
+                if (event.keyCode === 13) {
+                    console.log(event.target.value);
+
+                    $.getJSON('/countries/' + event.target.value, function (data) {
+                        $('#results').html(JSON.stringify(data));
+                        event.target.value = '';
+                    });
+                }
+            });
+        });
+
+    </script>
+</head>
+<body>
+<div>
+    <form>
+        <input type="text" name="username"/>
+        <input type="password" name="password"/>
+        <input type="submit" value="Login"/>
+    </form>
+</div>
+<div class="nodisplay" id="data">
+    <input type="text" id="country_name"/>
+    <div id="results"></div></div>
+
+</body>
+</html>
